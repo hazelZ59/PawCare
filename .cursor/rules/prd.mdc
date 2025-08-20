@@ -1,0 +1,202 @@
+---
+alwaysApply: false
+---
+# Product Requirements Document (PRD)
+
+## App Name: PawCare  
+### Version: 1.0  
+
+### Description  
+**PawCare** is a mobile app that allows users to track their cats' health by recording illnesses, uploading medical details, and generating health summaries. It supports multilingual capabilities and offers a beautiful, user-friendly UI.
+
+---
+
+## 1. Goals and Objectives  
+- Provide a centralized platform for cat owners to manage their pets' health records.  
+- Offer detailed illness tracking with file uploads and timestamped records.  
+- Generate health summaries and visual charts for easy understanding of pet health trends.  
+- Ensure the app is intuitive and supports English, Simplified Chinese, and Traditional Chinese.  
+
+---
+
+## 2. Target Audience  
+- Pet owners.  
+
+---
+
+## 3. Key Features  
+
+### 3.1 User Authentication
+- **Registration:**  
+  - Register via email only.
+  - Verification through OTP or password creation.  
+- **Login:**  
+  - Login via OTP or password.  
+
+### 3.2 Pet Management
+- Users can register multiple pets.  
+- Each pet's profile includes:  
+  - Name
+  - Breed  
+  - Age
+  - Gender  
+  - Neutering status  
+  - Allergen details (optional)
+
+### 3.3 Illness Tracking
+- Predefined illnesses with icons and descriptions.  
+- Users can:  
+  - Select an illness icon.  
+  - Upload images/videos or attach files.  
+  - Add text descriptions.  
+  - Record timestamps for health events.  
+- Custom illness entries if no predefined option exists.  
+
+### 3.4 Health Summary
+- Generate reports for each pet:  
+  - Total records (weekly/monthly/quartly/yearly).  
+  - Illness type distribution charts (e.g., pie charts).  
+
+### 3.5 Multilingual Support
+- Language options:  
+  - English  
+  - Simplified Chinese  
+  - Traditional Chinese  
+
+### 3.6 UI/UX
+- Beautiful and user-friendly design.  
+- Intuitive navigation for all features.  
+
+---
+
+## 4. File Structure  
+
+### 4.1 Overview  
+The app is built using the SwiftUI framework, adhering to modular and reusable components.
+
+PawCare/
+├── App/
+│ ├── PawCareApp.swift # Main app entry point
+│ ├── AppDelegate.swift # App lifecycle management
+│ ├── SceneDelegate.swift # Scene management
+│
+├── Features/
+│ ├── Authentication/
+│ │ ├── Views/
+│ │ │ ├── LoginView.swift
+│ │ │ ├── RegisterView.swift
+│ │ │ ├── OTPVerificationView.swift
+│ │ ├── ViewModels/
+│ │ │ ├── AuthenticationViewModel.swift
+│
+│ ├── PetManagement/
+│ │ ├── Views/
+│ │ │ ├── PetListView.swift
+│ │ │ ├── AddPetView.swift
+│ │ │ ├── PetDetailView.swift
+│ │ ├── ViewModels/
+│ │ │ ├── PetViewModel.swift
+│
+│ ├── IllnessTracking/
+│ │ ├── Views/
+│ │ │ ├── IllnessListView.swift
+│ │ │ ├── AddIllnessRecordView.swift
+│ │ │ ├── CustomIllnessView.swift
+│ │ ├── ViewModels/
+│ │ │ ├── IllnessViewModel.swift
+│
+│ ├── HealthSummary/
+│ │ ├── Views/
+│ │ │ ├── SummaryView.swift
+│ │ │ ├── WeeklyReportView.swift
+│ │ │ ├── MonthlyReportView.swift
+│ │ │ ├── ChartView.swift
+│ │ ├── ViewModels/
+│ │ │ ├── SummaryViewModel.swift
+│
+├── Shared/
+│ ├── Components/
+│ │ ├── CustomButton.swift # Reusable button UI
+│ │ ├── CustomTextField.swift # Reusable text field UI
+│ │ ├── Chart.swift # Customizable chart component
+│ ├── Resources/
+│ │ ├── Localizable.strings # Multilingual strings
+│ │ ├── Assets.xcassets # Icons, images, and app assets
+│ │ ├── Colors.swift # Theme colors
+│ │ ├── Fonts/ # Custom fonts
+│
+├── Models/
+│ ├── User.swift # User model
+│ ├── Pet.swift # Pet model
+│ ├── Illness.swift # Illness model
+│ ├── HealthRecord.swift # Health record model
+│
+├── Services/
+│ ├── API/
+│ │ ├── AuthenticationService.swift
+│ │ ├── PetService.swift
+│ │ ├── IllnessService.swift
+│ │ ├── SummaryService.swift
+│ ├── Local/
+│ │ ├── DatabaseManager.swift # Core Data/SQLite management
+│ │ ├── FileStorageManager.swift # Local file storage
+│
+├── Tests/
+│ ├── UnitTests/
+│ │ ├── AuthenticationTests.swift
+│ │ ├── PetManagementTests.swift
+│ ├── UITests/
+│ │ ├── LoginUITests.swift
+│ │ ├── PetManagementUITests.swift
+
+yaml
+
+Copy
+
+---
+
+## 5. Milestones  
+
+### Milestone 1: Authentication & Basic Pet Management  
+- Implement user registration and login system.  
+- Add ability to register multiple pets.  
+
+### Milestone 2: Illness Tracking  
+- Predefined illness list and custom illness addition.  
+- File upload capability for health records.  
+
+### Milestone 3: Health Summary  
+- Generate dynamic weekly/monthly/quartly/yearly summaries and illness stats.  
+- Visual charts for illness distribution.  
+
+### Milestone 4: UI/UX & Multilingual Support  
+- Apply beautiful UI/UX design.
+- Topic color: green and white
+- Integrate English, Simplified Chinese, and Traditional Chinese.  
+
+### Milestone 5: Testing & Deployment  
+- Conduct unit and UI testing.  
+- Publish to the App Store.  
+
+---
+
+## 6. Technical Details  
+
+### 6.1 Frameworks and Tools  
+- **Frameworks:** SwiftUI, Combine, Core Data  
+- **APIs:** Firebase for authentication, custom backend for data management  
+- **Testing:** XCTest, SwiftLint for code quality  
+
+### 6.2 Localization  
+- Use `Localizable.strings` for multilingual support.  
+- Dynamic language switching based on user preferences.  
+
+### 6.3 Charts  
+- Use `Swift Charts` for visualizing health summaries.  
+
+---
+
+## 7. KPIs (Key Performance Indicators)  
+- **User Retention:** 80% of users returning within 30 days of app usage.  
+- **Engagement:** Average of 3 health records per week per user.  
+- **Localization:** 90% accuracy in language translations.  
