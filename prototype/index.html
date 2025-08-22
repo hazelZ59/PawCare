@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCare - Cat Health Tracking</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f2f2f7;
+        }
+        
+        .prototype-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+        
+        .iphone-frame {
+            width: 390px;
+            height: 844px;
+            border-radius: 44px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+            background-color: white;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .content-area {
+            height: calc(100% - 44px - 83px);
+            margin-top: 44px;
+            overflow: hidden;
+        }
+        
+        .content-area-full {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .tab-bar {
+            height: 83px;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: env(safe-area-inset-bottom, 0);
+            z-index: 100;
+        }
+        
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #8e8e93;
+            padding: 6px 0;
+        }
+        
+        .tab-item.active {
+            color: #007aff;
+        }
+        
+        .tab-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .screen-title {
+            margin: 1rem 0;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-blue-500 text-white p-4 text-center">
+        <h1 class="text-2xl font-bold">PawCare - Cat Health Tracking App Prototype</h1>
+        <p class="mt-2">High-fidelity prototype for SwiftUI development</p>
+    </header>
+    
+    <div class="prototype-container">
+        <!-- Login Screen -->
+        <div>
+            <h2 class="screen-title">Login & Register</h2>
+            <div class="iphone-frame">
+                <div class="content-area-full">
+                    <iframe src="login.html"></iframe>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Home Screen -->
+        <div>
+            <h2 class="screen-title">Home Dashboard</h2>
+            <div class="iphone-frame">
+                <div class="status-bar">
+                    <div>9:41</div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-signal"></i>
+                        <i class="fas fa-wifi"></i>
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <iframe src="home.html"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item active">
+                        <div class="tab-icon"><i class="fas fa-home"></i></div>
+                        <div>Home</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>Health</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-weight"></i></div>
+                        <div>Weight</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-cog"></i></div>
+                        <div>Settings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cat Profile Screen -->
+        <div>
+            <h2 class="screen-title">Cat Profile</h2>
+            <div class="iphone-frame">
+                <div class="status-bar">
+                    <div>9:41</div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-signal"></i>
+                        <i class="fas fa-wifi"></i>
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <iframe src="profile.html"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-home"></i></div>
+                        <div>Home</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>Health</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-weight"></i></div>
+                        <div>Weight</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-cog"></i></div>
+                        <div>Settings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Health Records Screen -->
+        <div>
+            <h2 class="screen-title">Health Records</h2>
+            <div class="iphone-frame">
+                <div class="status-bar">
+                    <div>9:41</div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-signal"></i>
+                        <i class="fas fa-wifi"></i>
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <iframe src="health.html"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-home"></i></div>
+                        <div>Home</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>Health</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-weight"></i></div>
+                        <div>Weight</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-cog"></i></div>
+                        <div>Settings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Weight Tracking Screen -->
+        <div>
+            <h2 class="screen-title">Weight Tracking</h2>
+            <div class="iphone-frame">
+                <div class="status-bar">
+                    <div>9:41</div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-signal"></i>
+                        <i class="fas fa-wifi"></i>
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <iframe src="weight.html"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-home"></i></div>
+                        <div>Home</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>Health</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon"><i class="fas fa-weight"></i></div>
+                        <div>Weight</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-cog"></i></div>
+                        <div>Settings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Screen -->
+        <div>
+            <h2 class="screen-title">Settings</h2>
+            <div class="iphone-frame">
+                <div class="status-bar">
+                    <div>9:41</div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-signal"></i>
+                        <i class="fas fa-wifi"></i>
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <iframe src="settings.html"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-home"></i></div>
+                        <div>Home</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>Health</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon"><i class="fas fa-weight"></i></div>
+                        <div>Weight</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon"><i class="fas fa-cog"></i></div>
+                        <div>Settings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

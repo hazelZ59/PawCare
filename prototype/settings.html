@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCare - Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f2f2f7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-header {
+            padding: 16px;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #8e8e93;
+            padding: 16px 16px 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .setting-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: white;
+        }
+        
+        .setting-title {
+            font-weight: 500;
+        }
+        
+        .setting-right {
+            color: #8e8e93;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e5ea;
+            border-radius: 34px;
+            transition: .4s;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #34c759;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #007aff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 16px;
+        }
+        
+        .user-info h3 {
+            margin: 0 0 4px;
+            font-weight: 600;
+        }
+        
+        .user-info p {
+            margin: 0;
+            color: #8e8e93;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-header">
+        <h1 class="text-lg font-semibold">Settings</h1>
+    </div>
+    
+    <div class="p-4">
+        <div class="card">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <h3>John Smith</h3>
+                    <p>john.smith@example.com</p>
+                </div>
+                <div class="ml-auto text-blue-500">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-title">App Settings</div>
+        <div class="card">
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-blue-500">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="setting-title">Notifications</div>
+                </div>
+                <div class="setting-right">
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-green-500">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="setting-title">iCloud Sync</div>
+                </div>
+                <div class="setting-right">
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-purple-500">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="setting-title">App Lock</div>
+                </div>
+                <div class="setting-right">
+                    <label class="toggle">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-orange-500">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="setting-title">Language</div>
+                </div>
+                <div class="setting-right">
+                    <span class="mr-2">English</span>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-red-500">
+                        <i class="fas fa-ruler"></i>
+                    </div>
+                    <div class="setting-title">Units</div>
+                </div>
+                <div class="setting-right">
+                    <span class="mr-2">Metric</span>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-title">Veterinary</div>
+        <div class="card">
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-blue-500">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="setting-title">Veterinarians</div>
+                </div>
+                <div class="setting-right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-red-500">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <div class="setting-title">Emergency Contacts</div>
+                </div>
+                <div class="setting-right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-title">About</div>
+        <div class="card">
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-gray-500">
+                        <i class="fas fa-info"></i>
+                    </div>
+                    <div class="setting-title">App Version</div>
+                </div>
+                <div class="setting-right">
+                    <span>1.0.0</span>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-blue-500">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="setting-title">Rate the App</div>
+                </div>
+                <div class="setting-right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-green-500">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="setting-title">Help & Support</div>
+                </div>
+                <div class="setting-right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon bg-purple-500">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="setting-title">Privacy Policy</div>
+                </div>
+                <div class="setting-right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6 mb-20">
+            <button class="w-full py-3 text-red-500 font-semibold bg-white rounded-lg shadow-sm">
+                Sign Out
+            </button>
+        </div>
+    </div>
+</body>
+</html>
