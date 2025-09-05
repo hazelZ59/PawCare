@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCare - Add Cat</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f2f2f7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-header {
+            padding: 16px;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #3c3c43;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #fff;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23000' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+        }
+        
+        .photo-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            border: 2px dashed #c7c7cc;
+            margin: 0 auto 20px;
+            cursor: pointer;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .button-primary {
+            background-color: #007aff;
+            color: white;
+        }
+        
+        .button-secondary {
+            background-color: #f2f2f7;
+            color: #007aff;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e5ea;
+            border-radius: 34px;
+            transition: .4s;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #34c759;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-header">
+        <button class="text-blue-500" onclick="cancelAddCat()">
+            Cancel
+        </button>
+        <h1 class="text-lg font-semibold">Add New Cat</h1>
+        <button class="text-blue-500 font-semibold" onclick="saveNewCat()">
+            Save
+        </button>
+    </div>
+    
+    <div class="p-4 pb-20 overflow-auto" style="height: calc(100vh - 60px);">
+        <div class="photo-upload" onclick="uploadPhoto()">
+            <i class="fas fa-camera text-gray-400 text-2xl mb-2"></i>
+            <span class="text-sm text-gray-400">Add Photo</span>
+        </div>
+        
+        <form id="addCatForm">
+            <div class="form-group">
+                <label class="form-label">Name*</label>
+                <input type="text" class="form-input" placeholder="Enter your cat's name" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Date of Birth*</label>
+                <input type="date" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Gender*</label>
+                <select class="form-select" required>
+                    <option value="" disabled selected>Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Breed*</label>
+                <select class="form-select" required>
+                    <option value="" disabled selected>Select breed</option>
+                    <option value="maine_coon">Maine Coon</option>
+                    <option value="persian">Persian</option>
+                    <option value="siamese">Siamese</option>
+                    <option value="ragdoll">Ragdoll</option>
+                    <option value="bengal">Bengal</option>
+                    <option value="sphynx">Sphynx</option>
+                    <option value="british_shorthair">British Shorthair</option>
+                    <option value="abyssinian">Abyssinian</option>
+                    <option value="scottish_fold">Scottish Fold</option>
+                    <option value="norwegian_forest">Norwegian Forest Cat</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group toggle-container">
+                <label class="form-label">Spayed/Neutered</label>
+                <label class="toggle">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <h2 class="text-lg font-semibold mt-8 mb-4">Medical Information (Optional)</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Blood Type</label>
+                <select class="form-select">
+                    <option value="" disabled selected>Select blood type</option>
+                    <option value="a">A</option>
+                    <option value="b">B</option>
+                    <option value="ab">AB</option>
+                    <option value="unknown">Unknown</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Allergies</label>
+                <input type="text" class="form-input" placeholder="Enter allergies (comma separated)">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Chronic Conditions</label>
+                <input type="text" class="form-input" placeholder="Enter chronic conditions (comma separated)">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-input" rows="3" placeholder="Add any additional notes about your cat"></textarea>
+            </div>
+            
+            <div class="mt-8">
+                <button type="button" class="button button-primary" onclick="saveNewCat()">
+                    Add Cat
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        function uploadPhoto() {
+            alert('This would open the photo picker');
+        }
+        
+        function cancelAddCat() {
+            window.parent.location.href = '#home';
+        }
+        
+        function saveNewCat() {
+            // Validate form
+            const form = document.getElementById('addCatForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.style.borderColor = 'red';
+                } else {
+                    field.style.borderColor = '#e5e5ea';
+                }
+            });
+            
+            if (isValid) {
+                alert('Cat added successfully!');
+                window.parent.location.href = '#home';
+            } else {
+                alert('Please fill in all required fields');
+            }
+        }
+    </script>
+</body>
+</html>

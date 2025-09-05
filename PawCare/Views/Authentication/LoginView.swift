@@ -132,31 +132,6 @@ struct LoginView: View {
                 }
             }
             
-            // Social login options
-            VStack(spacing: 20) {
-                HStack {
-                    Rectangle()
-                        .fill(Color(.systemGray5))
-                        .frame(height: 1)
-                    
-                    Text("or continue with")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                    
-                    Rectangle()
-                        .fill(Color(.systemGray5))
-                        .frame(height: 1)
-                }
-                .padding(.vertical)
-                
-                HStack(spacing: 20) {
-                    SocialLoginButton(icon: "applelogo", color: .black)
-                    SocialLoginButton(icon: "g.circle.fill", color: .red)
-                    SocialLoginButton(icon: "f.circle.fill", color: .blue)
-                }
-            }
-            .padding(.top, 20)
-            
             Spacer()
             
             // Terms and conditions
@@ -340,27 +315,6 @@ struct ForgotPasswordView: View {
                     }
                 }
             }
-        }
-    }
-}
-
-struct SocialLoginButton: View {
-    let icon: String
-    let color: Color
-    
-    var body: some View {
-        Button(action: {
-            // Handle social login
-        }) {
-            Image(systemName: icon)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 24, height: 24)
-                .foregroundColor(color)
-                .frame(width: 50, height: 50)
-                .background(Color.white)
-                .clipShape(Circle())
-                .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
         }
     }
 }

@@ -5,6 +5,7 @@ struct WeightTrackingView: View {
     @EnvironmentObject var dataService: DataService
     @State private var selectedCat: Cat?
     @State private var isShowingCalendar = false
+    @State private var isShowingAddWeight = false
     
     var body: some View {
         NavigationView {
@@ -123,12 +124,37 @@ struct WeightTrackingView: View {
                                 }
                                 .padding(.top)
                             } else {
-                                ContentUnavailableView(
-                                    "No Weight Data",
-                                    systemImage: "scalemass",
-                                    description: Text("Add your first weight record to start tracking")
-                                )
-                                .frame(height: 200)
+                                VStack(spacing: 20) {
+                                    Image(systemName: "scalemass")
+                                        .font(.system(size: 60))
+                                        .foregroundColor(.gray)
+                                    
+                                    Text("No Weight Data")
+                                        .font(.title2)
+                                        .fontWeight(.medium)
+                                    
+                                    Text("Add your first weight record to start tracking")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal, 40)
+                                    
+                                    Button(action: {
+                                        isShowingAddWeight = true
+                                    }) {
+                                        Text("Add Weight Record")
+                                            .fontWeight(.semibold)
+                                            .foregroundColor(.white)
+                                            .padding(.vertical, 12)
+                                            .padding(.horizontal, 24)
+                                            .background(Color.blue)
+                                            .cornerRadius(10)
+                                    }
+                                    .padding(.top, 10)
+                                }
+                                .frame(height: 300)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical)
                             }
                         }
                         .background(Color.white)
@@ -136,11 +162,22 @@ struct WeightTrackingView: View {
                         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                         .padding(.horizontal)
                     } else {
-                        ContentUnavailableView(
-                            "No Cats Added",
-                            systemImage: "pawprint",
-                            description: Text("Add your first cat to get started")
-                        )
+                        VStack(spacing: 20) {
+                            Image(systemName: "pawprint")
+                                .font(.system(size: 60))
+                                .foregroundColor(.gray)
+                            
+                            Text("No Cats Added")
+                                .font(.title2)
+                                .fontWeight(.medium)
+                            
+                            Text("Add your first cat to get started")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 40)
+                        }
+                        .frame(maxWidth: .infinity)
                         .padding(.top, 50)
                     }
                 }
@@ -159,7 +196,9 @@ struct WeightTrackingView: View {
             }
             .overlay(alignment: .bottomTrailing) {
                 Button(action: {
-                    // Show add weight record
+                    if let cat = selectedCat ?? dataService.cats.first {
+                        isShowingAddWeight = true
+                    }
                 }) {
                     Image(systemName: "plus")
                         .font(.title2)
@@ -171,6 +210,18 @@ struct WeightTrackingView: View {
                 }
                 .padding(.trailing, 24)
                 .padding(.bottom, 100) // Position above tab bar
+                .opacity(dataService.cats.isEmpty ? 0 : 1)
+            }
+            .sheet(isPresented: $isShowingAddWeight) {
+                if let cat = selectedCat ?? dataService.cats.first {
+                    AddWeightView(cat: cat)
+                }
+            }
+        }
+        .onAppear {
+            // Set the default selected cat if none is selected
+            if selectedCat == nil && !dataService.cats.isEmpty {
+                selectedCat = dataService.cats.first
             }
         }
     }

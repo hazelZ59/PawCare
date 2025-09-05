@@ -4,157 +4,274 @@ import Charts
 struct HomeView: View {
     @EnvironmentObject var dataService: DataService
     @State private var selectedCat: Cat?
-
+    @State private var isShowingAddCat = false
+    @State private var isShowingAddHealthRecord = false
+    @State private var isShowingAddWeightRecord = false
+    @State private var isShowingActionSheet = false
+    
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 16) {
-                    // Cat selector
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            ForEach(dataService.cats) { cat in
-                                CatAvatarView(cat: cat, isSelected: selectedCat?.id == cat.id)
-                                    .onTapGesture {
-                                        selectedCat = cat
-                                    }
+            Group {
+                if dataService.cats.isEmpty {
+                    // Empty state when no cats are added
+                    VStack(spacing: 24) {
+                        Spacer()
+                        
+                        Image(systemName: "pawprint.circle.fill")
+                            .font(.system(size: 80))
+                            .foregroundColor(.blue.opacity(0.8))
+                        
+                        Text("Welcome to PawCare")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        
+                        Text("Add your first cat to start tracking their health records, weight, and more.")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                        
+                        Button(action: {
+                            isShowingAddCat = true
+                        }) {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Add Your First Cat")
                             }
-
-                            Button(action: {
-                                // Navigate to add cat view
-                            }) {
-                                VStack {
-                                    ZStack {
-                                        Circle()
-                                            .fill(Color.blue.opacity(0.1))
-                                            .frame(width: 60, height: 60)
-
-                                        Image(systemName: "plus")
-                                            .font(.system(size: 24))
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(12)
+                            .padding(.horizontal, 40)
+                        }
+                        .padding(.top, 16)
+                        
+                        Spacer()
+                    }
+                    .navigationTitle("PawCare")
+                } else {
+                    // Regular view when cats are available
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            // Cat selector
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 12) {
+                                    ForEach(dataService.cats) { cat in
+                                        CatAvatarView(cat: cat, isSelected: selectedCat?.id == cat.id)
+                                            .onTapGesture {
+                                                selectedCat = cat
+                                            }
+                                    }
+                                    
+                                    Button(action: {
+                                        isShowingAddCat = true
+                                    }) {
+                                        VStack {
+                                            ZStack {
+                                                Circle()
+                                                    .fill(Color.blue.opacity(0.1))
+                                                    .frame(width: 60, height: 60)
+                                                
+                                                Image(systemName: "plus")
+                                                    .font(.system(size: 24))
+                                                    .foregroundColor(.blue)
+                                            }
+                                            
+                                            Text("Add Cat")
+                                                .font(.caption)
+                                                .fontWeight(.medium)
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal)
+                            }
+                            .padding(.top, 8)
+                            
+                            if let cat = selectedCat ?? dataService.cats.first {
+                                // Overview card
+                                VStack(spacing: 0) {
+                                    HStack {
+                                        Text("Today's Overview")
+                                            .font(.headline)
+                                        
+                                        Spacer()
+                                        
+                                        Text(cat.name)
+                                            .font(.subheadline)
                                             .foregroundColor(.blue)
                                     }
-
-                                    Text("Add Cat")
-                                        .font(.caption)
-                                        .fontWeight(.medium)
+                                    .padding()
+                                    .background(Color.white)
+                                    
+                                    CatStatsGrid(cat: cat)
+                                        .environmentObject(dataService)
+                                        .padding()
+                                        .background(Color.white)
                                 }
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    .padding(.top, 8)
-
-                    if let cat = selectedCat ?? dataService.cats.first {
-                        // Overview card
-                        VStack(spacing: 0) {
-                            HStack {
-                                Text("Today's Overview")
-                                    .font(.headline)
-
-                                Spacer()
-
-                                Text(cat.name)
-                                    .font(.subheadline)
-                                    .foregroundColor(.blue)
-                            }
-                            .padding()
-                            .background(Color.white)
-
-                            CatStatsGrid(cat: cat)
-                                .environmentObject(dataService)
-                                .padding()
-                                .background(Color.white)
-                        }
-                        .cornerRadius(12)
-                        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
-                        .padding(.horizontal)
-
-                        // Reminders
-                        CardView(title: "Today's Reminders", actionText: "View All") {
-                            if dataService.healthRecords.filter({ $0.catId == cat.id }).isEmpty {
-                                ContentUnavailableView(
-                                    "No Reminders",
-                                    systemImage: "bell.slash",
-                                    description: Text("You don't have any reminders for today")
-                                )
-                                .frame(height: 150)
-                            } else {
-                                VStack(spacing: 0) {
-                                    ListItemView(
-                                        icon: "pills",
-                                        iconColor: .red,
-                                        title: "Morning Medication",
-                                        subtitle: "8:00 AM - Antibiotic"
-                                    )
-
-                                    Divider()
-
-                                    ListItemView(
-                                        icon: "fork.knife",
-                                        iconColor: .green,
-                                        title: "Evening Meal",
-                                        subtitle: "6:00 PM - 1/2 cup dry food"
-                                    )
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-
-                        // Recent activity
-                        CardView(title: "Recent Activity", actionText: "View All") {
-                            VStack(spacing: 0) {
-                                ForEach(dataService.healthRecords.filter { $0.catId == cat.id }.prefix(3)) { record in
-                                    ListItemView(
-                                        icon: record.type.icon,
-                                        iconColor: record.type.color,
-                                        title: record.title,
-                                        subtitle: formatDate(record.date) + (record.veterinarian != nil ? " • \(record.veterinarian!)" : "")
-                                    )
-
-                                    if record.id != dataService.healthRecords.filter({ $0.catId == cat.id }).prefix(3).last?.id {
-                                        Divider()
+                                .cornerRadius(12)
+                                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
+                                .padding(.horizontal)
+                                
+                                // Reminders
+                                CardView(title: "Today's Reminders", actionText: "View All") {
+                                    if dataService.healthRecords.filter({ $0.catId == cat.id }).isEmpty {
+                                        VStack(spacing: 20) {
+                                            Image(systemName: "bell.slash")
+                                                .font(.system(size: 40))
+                                                .foregroundColor(.gray)
+                                            
+                                            Text("No Reminders")
+                                                .font(.headline)
+                                            
+                                            Text("You don't have any reminders for today")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                                .multilineTextAlignment(.center)
+                                        }
+                                        .frame(height: 150)
+                                    } else {
+                                        VStack(spacing: 0) {
+                                            ListItemView(
+                                                icon: "pills",
+                                                iconColor: .red,
+                                                title: "Morning Medication",
+                                                subtitle: "8:00 AM - Antibiotic"
+                                            )
+                                            
+                                            Divider()
+                                            
+                                            ListItemView(
+                                                icon: "fork.knife",
+                                                iconColor: .green,
+                                                title: "Evening Meal",
+                                                subtitle: "6:00 PM - 1/2 cup dry food"
+                                            )
+                                        }
                                     }
                                 }
+                                .padding(.horizontal)
+                                
+                                // Recent activity
+                                CardView(title: "Recent Activity", actionText: "View All") {
+                                    if dataService.healthRecords.filter({ $0.catId == cat.id }).isEmpty {
+                                        VStack(spacing: 20) {
+                                            Image(systemName: "list.bullet.clipboard")
+                                                .font(.system(size: 40))
+                                                .foregroundColor(.gray)
+                                            
+                                            Text("No Activity")
+                                                .font(.headline)
+                                            
+                                            Text("Add health records to track your cat's activity")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                                .multilineTextAlignment(.center)
+                                            
+                                            Button(action: {
+                                                isShowingAddHealthRecord = true
+                                            }) {
+                                                Text("Add Health Record")
+                                                    .font(.subheadline)
+                                                    .fontWeight(.medium)
+                                                    .foregroundColor(.blue)
+                                                    .padding(.vertical, 8)
+                                                    .padding(.horizontal, 16)
+                                                    .background(Color.blue.opacity(0.1))
+                                                    .cornerRadius(8)
+                                            }
+                                        }
+                                        .frame(height: 200)
+                                    } else {
+                                        VStack(spacing: 0) {
+                                            ForEach(dataService.healthRecords.filter { $0.catId == cat.id }.prefix(3)) { record in
+                                                ListItemView(
+                                                    icon: record.type.icon,
+                                                    iconColor: record.type.color,
+                                                    title: record.title,
+                                                    subtitle: formatDate(record.date) + (record.veterinarian != nil ? " • \(record.veterinarian!)" : "")
+                                                )
+                                                
+                                                if record.id != dataService.healthRecords.filter({ $0.catId == cat.id }).prefix(3).last?.id {
+                                                    Divider()
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal)
                             }
                         }
-                        .padding(.horizontal)
-                    } else {
-                        ContentUnavailableView(
-                            "No Cats Added",
-                            systemImage: "pawprint",
-                            description: Text("Add your first cat to get started")
-                        )
-                        .padding(.top, 50)
+                        .padding(.bottom, 100)
+                    }
+                    .navigationTitle("PawCare")
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {}) {
+                                Image(systemName: "bell")
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                    }
+                    .overlay(alignment: .bottomTrailing) {
+                        Button(action: {
+                            isShowingActionSheet = true
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .frame(width: 56, height: 56)
+                                .background(Color.blue)
+                                .clipShape(Circle())
+                                .shadow(color: Color.blue.opacity(0.3), radius: 10, x: 0, y: 5)
+                        }
+                        .padding(.trailing, 24)
+                        .padding(.bottom, 100)
+                    }
+                    .confirmationDialog("Add New", isPresented: $isShowingActionSheet, titleVisibility: .visible) {
+                        Button("Add Health Record") {
+                            if let cat = selectedCat ?? dataService.cats.first {
+                                isShowingAddHealthRecord = true
+                            }
+                        }
+                        
+                        Button("Add Weight Record") {
+                            if let cat = selectedCat ?? dataService.cats.first {
+                                isShowingAddWeightRecord = true
+                            }
+                        }
+                        
+                        Button("Add Cat") {
+                            isShowingAddCat = true
+                        }
+                        
+                        Button("Cancel", role: .cancel) {}
                     }
                 }
-                .padding(.bottom, 100)
             }
-            .navigationTitle("PawCare")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {}) {
-                        Image(systemName: "bell")
-                            .foregroundColor(.primary)
-                    }
+            .sheet(isPresented: $isShowingAddCat) {
+                AddCatView()
+            }
+            .sheet(isPresented: $isShowingAddHealthRecord) {
+                if let cat = selectedCat ?? dataService.cats.first {
+                    AddHealthRecordView(cat: cat)
                 }
             }
-            .overlay(alignment: .bottomTrailing) {
-                Button(action: {
-                    // Show add action sheet
-                }) {
-                    Image(systemName: "plus")
-                        .font(.title2)
-                        .foregroundColor(.white)
-                        .frame(width: 56, height: 56)
-                        .background(Color.blue)
-                        .clipShape(Circle())
-                        .shadow(color: Color.blue.opacity(0.3), radius: 10, x: 0, y: 5)
+            .sheet(isPresented: $isShowingAddWeightRecord) {
+                if let cat = selectedCat ?? dataService.cats.first {
+                    AddWeightView(cat: cat)
                 }
-                .padding(.trailing, 24)
-                .padding(.bottom, 100)
+            }
+        }
+        .onAppear {
+            // Set the default selected cat if none is selected
+            if selectedCat == nil && !dataService.cats.isEmpty {
+                selectedCat = dataService.cats.first
             }
         }
     }
-
+    
     private func formatDate(_ date: Date) -> String {
         if Calendar.current.isDateInToday(date) {
             return "Today"
@@ -196,7 +313,7 @@ struct CatStatsGrid: View {
             return ("syringe", .gray, "None")
         }
     }
-
+    
     var body: some View {
         let columns = [GridItem(.flexible()), GridItem(.flexible())]
         

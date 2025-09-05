@@ -100,42 +100,6 @@
             color: #007aff;
         }
         
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 30px 0;
-            color: #8e8e93;
-        }
-        
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e5e5ea;
-        }
-        
-        .divider span {
-            padding: 0 10px;
-        }
-        
-        .social-login {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .social-button {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            font-size: 20px;
-        }
-        
         .footer-text {
             text-align: center;
             color: #8e8e93;
@@ -200,10 +164,10 @@
             </div>
             
             <div class="text-right mb-4">
-                <a href="#" class="text-blue-500 text-sm">Forgot Password?</a>
+                <a href="#" onclick="showForgotPassword()" class="text-blue-500 text-sm">Forgot Password?</a>
             </div>
             
-            <button class="button button-primary mb-4">Login</button>
+            <button class="button button-primary mb-4" onclick="navigateToHome()">Login</button>
         </div>
         
         <!-- Register Form (hidden by default) -->
@@ -228,23 +192,7 @@
                 <input type="password" class="form-input" placeholder="••••••••">
             </div>
             
-            <button class="button button-primary mb-4">Create Account</button>
-        </div>
-        
-        <div class="divider">
-            <span>or continue with</span>
-        </div>
-        
-        <div class="social-login">
-            <div class="social-button">
-                <i class="fab fa-apple"></i>
-            </div>
-            <div class="social-button">
-                <i class="fab fa-google text-red-500"></i>
-            </div>
-            <div class="social-button">
-                <i class="fab fa-facebook text-blue-600"></i>
-            </div>
+            <button class="button button-primary mb-4" onclick="navigateToHome()">Create Account</button>
         </div>
         
         <div class="footer-text">
@@ -272,6 +220,15 @@
             registerForm.style.display = 'block';
             loginForm.style.display = 'none';
         });
+        
+        // Navigation functions
+        function showForgotPassword() {
+            alert('This would navigate to the forgot password screen');
+        }
+        
+        function navigateToHome() {
+            window.parent.location.href = '#home';
+        }
     </script>
 </body>
 </html>

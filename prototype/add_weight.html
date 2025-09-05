@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCare - Add Weight Record</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f2f2f7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-header {
+            padding: 16px;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #3c3c43;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+        }
+        
+        .button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .button-primary {
+            background-color: #007aff;
+            color: white;
+        }
+        
+        .button-secondary {
+            background-color: #f2f2f7;
+            color: #007aff;
+        }
+        
+        .weight-input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .weight-input {
+            flex: 1;
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: #007aff;
+        }
+        
+        .weight-input:focus {
+            outline: none;
+        }
+        
+        .weight-unit {
+            font-size: 24px;
+            color: #8e8e93;
+            margin-left: 10px;
+        }
+        
+        .weight-slider {
+            width: 100%;
+            height: 30px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            margin: 20px 0;
+        }
+        
+        .weight-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #007aff;
+            cursor: pointer;
+            margin-top: -10px;
+        }
+        
+        .weight-slider::-webkit-slider-runnable-track {
+            height: 10px;
+            background: #e5e5ea;
+            border-radius: 5px;
+        }
+        
+        .weight-slider:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-header">
+        <button class="text-blue-500" onclick="cancelAddWeight()">
+            Cancel
+        </button>
+        <h1 class="text-lg font-semibold">Add Weight Record</h1>
+        <button class="text-blue-500 font-semibold" onclick="saveWeightRecord()">
+            Save
+        </button>
+    </div>
+    
+    <div class="p-4 pb-20 overflow-auto" style="height: calc(100vh - 60px);">
+        <form id="addWeightForm">
+            <div class="text-center mb-8">
+                <h2 class="text-xl font-semibold mb-2">Whiskers</h2>
+                <p class="text-gray-500">Maine Coon • 3 years old</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 mb-6 shadow-sm">
+                <h3 class="text-lg font-semibold mb-4">Weight</h3>
+                
+                <div class="weight-input-container">
+                    <input type="number" class="weight-input" id="weightInput" value="5.2" min="0" max="30" step="0.1" required>
+                    <span class="weight-unit">kg</span>
+                </div>
+                
+                <input type="range" class="weight-slider" id="weightSlider" min="0" max="30" step="0.1" value="5.2">
+                
+                <div class="flex justify-between text-xs text-gray-500">
+                    <span>0 kg</span>
+                    <span>15 kg</span>
+                    <span>30 kg</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-input" id="dateInput" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-input" rows="3" placeholder="Add any additional notes about this weight record"></textarea>
+            </div>
+            
+            <div class="mt-8">
+                <button type="button" class="button button-primary" onclick="saveWeightRecord()">
+                    Save Weight Record
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Set today's date as default
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateInput').value = today;
+            
+            // Sync slider and input
+            const weightInput = document.getElementById('weightInput');
+            const weightSlider = document.getElementById('weightSlider');
+            
+            weightInput.addEventListener('input', function() {
+                weightSlider.value = this.value;
+            });
+            
+            weightSlider.addEventListener('input', function() {
+                weightInput.value = this.value;
+            });
+        });
+        
+        function cancelAddWeight() {
+            window.parent.location.href = '#weight';
+        }
+        
+        function saveWeightRecord() {
+            // Validate form
+            const form = document.getElementById('addWeightForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.style.borderColor = 'red';
+                } else {
+                    field.style.borderColor = '#e5e5ea';
+                }
+            });
+            
+            // Validate weight is a positive number
+            const weightInput = document.getElementById('weightInput');
+            if (parseFloat(weightInput.value) <= 0) {
+                isValid = false;
+                weightInput.style.color = 'red';
+            } else {
+                weightInput.style.color = '#007aff';
+            }
+            
+            if (isValid) {
+                alert('Weight record added successfully!');
+                window.parent.location.href = '#weight';
+            } else {
+                alert('Please fill in all required fields with valid values');
+            }
+        }
+    </script>
+</body>
+</html>

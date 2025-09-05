@@ -3,9 +3,6 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var authService: AuthService
     @State private var notificationsEnabled = true
-    @State private var iCloudSyncEnabled = true
-    @State private var appLockEnabled = false
-    @State private var language = "English"
     @State private var units = "Metric"
     
     var body: some View {
@@ -48,31 +45,14 @@ struct SettingsView: View {
                 Section(header: Text("App Settings")) {
                     SettingToggleRow(icon: "bell.fill", iconColor: .blue, title: "Notifications", isOn: $notificationsEnabled)
                     
-                    SettingToggleRow(icon: "cloud.fill", iconColor: .green, title: "iCloud Sync", isOn: $iCloudSyncEnabled)
-                    
-                    SettingToggleRow(icon: "lock.fill", iconColor: .purple, title: "App Lock", isOn: $appLockEnabled)
-                    
-                    SettingNavigationRow(icon: "globe", iconColor: .orange, title: "Language", value: language)
-                    
                     SettingNavigationRow(icon: "ruler", iconColor: .red, title: "Units", value: units)
-                }
-                
-                // Veterinary section
-                Section(header: Text("Veterinary")) {
-                    SettingNavigationRow(icon: "stethoscope", iconColor: .blue, title: "Veterinarians")
-                    
-                    SettingNavigationRow(icon: "cross.case.fill", iconColor: .red, title: "Emergency Contacts")
                 }
                 
                 // About section
                 Section(header: Text("About")) {
                     SettingValueRow(icon: "info.circle", iconColor: .gray, title: "App Version", value: "1.0.0")
                     
-                    SettingNavigationRow(icon: "star.fill", iconColor: .blue, title: "Rate the App")
-                    
                     SettingNavigationRow(icon: "questionmark.circle", iconColor: .green, title: "Help & Support")
-                    
-                    SettingNavigationRow(icon: "shield", iconColor: .purple, title: "Privacy Policy")
                 }
                 
                 // Sign out button

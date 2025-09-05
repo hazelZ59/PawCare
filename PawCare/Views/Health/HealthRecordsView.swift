@@ -7,6 +7,8 @@ struct HealthRecordsView: View {
     @State private var selectedTab: HealthRecord.RecordType?
     @State private var searchText = ""
     @State private var isShowingFilters = false
+    @State private var isShowingAddRecord = false
+    @State private var isShowingEmptyState = false
     
     var body: some View {
         NavigationView {
@@ -46,17 +48,57 @@ struct HealthRecordsView: View {
                 .padding(.vertical, 8)
                 .background(Color.white)
                 
-                // Health records list
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        ForEach(filteredRecords) { record in
-                            HealthRecordCard(record: record)
-                                .padding(.horizontal)
+                if filteredRecords.isEmpty {
+                    // Empty state
+                    VStack(spacing: 20) {
+                        Spacer()
+                        
+                        Image(systemName: "clipboard")
+                            .font(.system(size: 60))
+                            .foregroundColor(.gray)
+                        
+                        Text("No Health Records")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                        
+                        Text(selectedTab == nil ? 
+                             "Add your cat's health records to keep track of their medical history" :
+                                "No \(selectedTab!.rawValue) records found")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                        
+                        Button(action: {
+                            isShowingAddRecord = true
+                        }) {
+                            Text("Add Health Record")
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 24)
+                                .background(Color.blue)
+                                .cornerRadius(10)
                         }
+                        .padding(.top, 10)
+                        
+                        Spacer()
                     }
-                    .padding(.vertical)
+                    .frame(maxWidth: .infinity)
+                    .background(Color(.systemGray6))
+                } else {
+                    // Health records list
+                    ScrollView {
+                        LazyVStack(spacing: 16) {
+                            ForEach(filteredRecords) { record in
+                                HealthRecordCard(record: record)
+                                    .padding(.horizontal)
+                            }
+                        }
+                        .padding(.vertical)
+                    }
+                    .background(Color(.systemGray6))
                 }
-                .background(Color(.systemGray6))
             }
             .navigationTitle("Health Records")
             .toolbar {
@@ -80,7 +122,7 @@ struct HealthRecordsView: View {
             }
             .overlay(alignment: .bottomTrailing) {
                 Button(action: {
-                    // Show add health record
+                    isShowingAddRecord = true
                 }) {
                     Image(systemName: "plus")
                         .font(.title2)
@@ -92,6 +134,17 @@ struct HealthRecordsView: View {
                 }
                 .padding(.trailing, 24)
                 .padding(.bottom, 100) // Position above tab bar
+            }
+            .sheet(isPresented: $isShowingAddRecord) {
+                if let cat = selectedCat ?? dataService.cats.first {
+                    AddHealthRecordView(cat: cat)
+                }
+            }
+        }
+        .onAppear {
+            // Set the default selected cat if none is selected
+            if selectedCat == nil && !dataService.cats.isEmpty {
+                selectedCat = dataService.cats.first
             }
         }
     }

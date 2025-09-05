@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCare - Add Health Record</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f2f2f7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-header {
+            padding: 16px;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #3c3c43;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #fff;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23000' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+        }
+        
+        .button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .button-primary {
+            background-color: #007aff;
+            color: white;
+        }
+        
+        .button-secondary {
+            background-color: #f2f2f7;
+            color: #007aff;
+        }
+        
+        .file-upload {
+            border: 2px dashed #c7c7cc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .file-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .file-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .file-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .file-item .remove-file {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .record-type-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .record-type-option {
+            flex: 1;
+            min-width: calc(50% - 10px);
+            padding: 15px;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .record-type-option.selected {
+            border-color: #007aff;
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+        
+        .record-type-option .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-header">
+        <button class="text-blue-500" onclick="cancelAddRecord()">
+            Cancel
+        </button>
+        <h1 class="text-lg font-semibold">Add Health Record</h1>
+        <button class="text-blue-500 font-semibold" onclick="saveHealthRecord()">
+            Save
+        </button>
+    </div>
+    
+    <div class="p-4 pb-20 overflow-auto" style="height: calc(100vh - 60px);">
+        <form id="addHealthRecordForm">
+            <div class="form-group">
+                <label class="form-label">Record Type*</label>
+                <div class="record-type-selector">
+                    <div class="record-type-option selected" data-type="vaccination" onclick="selectRecordType(this)">
+                        <div class="icon text-blue-500">
+                            <i class="fas fa-syringe"></i>
+                        </div>
+                        <div>Vaccination</div>
+                    </div>
+                    <div class="record-type-option" data-type="medication" onclick="selectRecordType(this)">
+                        <div class="icon text-red-500">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div>Medication</div>
+                    </div>
+                    <div class="record-type-option" data-type="vet_visit" onclick="selectRecordType(this)">
+                        <div class="icon text-green-500">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div>Vet Visit</div>
+                    </div>
+                    <div class="record-type-option" data-type="symptom" onclick="selectRecordType(this)">
+                        <div class="icon text-yellow-500">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div>Symptom</div>
+                    </div>
+                </div>
+                <input type="hidden" id="recordType" value="vaccination" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Title*</label>
+                <input type="text" class="form-input" placeholder="e.g. Rabies Vaccination" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Date*</label>
+                <input type="date" class="form-input" value="2023-08-19" required>
+            </div>
+            
+            <div class="form-group" id="validUntilGroup">
+                <label class="form-label">Valid Until</label>
+                <input type="date" class="form-input">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Veterinarian</label>
+                <input type="text" class="form-input" placeholder="e.g. Dr. Smith">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-input" rows="4" placeholder="Add any additional information here..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Attach Documents/Images</label>
+                <div class="file-upload" onclick="uploadFiles()">
+                    <i class="fas fa-file-upload text-gray-400 text-2xl mb-2"></i>
+                    <p class="text-gray-400">Tap to upload documents or images</p>
+                </div>
+                
+                <div class="file-preview">
+                    <!-- Preview items will be added here -->
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <button type="button" class="button button-primary" onclick="saveHealthRecord()">
+                    Save Record
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        function selectRecordType(element) {
+            // Remove selected class from all options
+            document.querySelectorAll('.record-type-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Update hidden input value
+            document.getElementById('recordType').value = element.dataset.type;
+            
+            // Show/hide valid until field based on record type
+            const validUntilGroup = document.getElementById('validUntilGroup');
+            validUntilGroup.style.display = element.dataset.type === 'vaccination' ? 'block' : 'none';
+        }
+        
+        function uploadFiles() {
+            // Simulate file upload
+            const filePreview = document.querySelector('.file-preview');
+            
+            // Add a sample image preview
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <img src="https://via.placeholder.com/80" alt="Uploaded file">
+                <div class="remove-file" onclick="removeFile(this)">
+                    <i class="fas fa-times"></i>
+                </div>
+            `;
+            
+            filePreview.appendChild(fileItem);
+        }
+        
+        function removeFile(element) {
+            element.parentElement.remove();
+        }
+        
+        function cancelAddRecord() {
+            window.parent.location.href = '#health';
+        }
+        
+        function saveHealthRecord() {
+            // Validate form
+            const form = document.getElementById('addHealthRecordForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.style.borderColor = 'red';
+                } else {
+                    field.style.borderColor = '#e5e5ea';
+                }
+            });
+            
+            if (isValid) {
+                alert('Health record added successfully!');
+                window.parent.location.href = '#health';
+            } else {
+                alert('Please fill in all required fields');
+            }
+        }
+    </script>
+</body>
+</html>
