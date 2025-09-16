@@ -12,7 +12,7 @@ struct AddHealthRecordView: View {
     @State private var date = Date()
     @State private var veterinarian = ""
     @State private var notes = ""
-    @State private var validUntil: Date? = nil
+    @State private var reminderDate: Date? = nil
     @State private var selectedPhotosItems: [PhotosPickerItem] = []
     @State private var selectedPhotosData: [Data] = []
     @State private var documentName = ""
@@ -31,9 +31,9 @@ struct AddHealthRecordView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .onChange(of: recordType) { newValue in
-                        // Reset valid until date if not a vaccination
-                        if newValue != .vaccination {
-                            validUntil = nil
+                        // Reset reminder date if changing record type
+                        if newValue != recordType {
+                            reminderDate = nil
                         }
                     }
                 }
@@ -45,12 +45,10 @@ struct AddHealthRecordView: View {
                     
                     TextField("Veterinarian", text: $veterinarian)
                     
-                    if recordType == .vaccination {
-                        DatePicker("Valid Until", selection: Binding(
-                            get: { validUntil ?? Calendar.current.date(byAdding: .year, value: 1, to: date)! },
-                            set: { validUntil = $0 }
-                        ), displayedComponents: .date)
-                    }
+                    DatePicker("Remind me at", selection: Binding(
+                        get: { reminderDate ?? Calendar.current.date(byAdding: .day, value: 1, to: date)! },
+                        set: { reminderDate = $0 }
+                    ), displayedComponents: [.date, .hourAndMinute])
                 }
                 
                 Section(header: Text("Notes")) {
@@ -162,7 +160,7 @@ struct AddHealthRecordView: View {
         var attachments: [HealthRecord.Attachment] = []
         
         // Simulate network delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: DispatchWorkItem(block: {
             // Create mock attachments for demo purposes
             for (index, _) in selectedPhotosData.enumerated() {
                 let attachment = HealthRecord.Attachment(
@@ -184,13 +182,13 @@ struct AddHealthRecordView: View {
                 veterinarian: veterinarian.isEmpty ? nil : veterinarian,
                 notes: notes.isEmpty ? nil : notes,
                 attachments: attachments,
-                validUntil: recordType == .vaccination ? validUntil : nil
+                reminderDate: reminderDate
             )
             
             dataService.addHealthRecord(newRecord)
             isLoading = false
             dismiss()
-        }
+        }))
     }
 }
 

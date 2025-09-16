@@ -48,6 +48,7 @@
             align-items: center;
             padding: 16px;
             border-bottom: 1px solid #f2f2f7;
+            cursor: pointer;
         }
         
         .setting-item:last-child {
@@ -129,6 +130,7 @@
             display: flex;
             align-items: center;
             padding: 16px;
+            cursor: pointer;
         }
         
         .user-avatar {
@@ -164,7 +166,7 @@
     <div class="p-4">
         <!-- User Profile -->
         <div class="card">
-            <div class="user-profile">
+            <div class="user-profile" onclick="window.location.href='user_profile.html'">
                 <div class="user-avatar">
                     <i class="fas fa-user"></i>
                 </div>
@@ -189,22 +191,22 @@
                     <div class="setting-title">Notifications</div>
                 </div>
                 <div class="setting-right">
-                    <label class="toggle">
+                    <label class="toggle" onclick="event.stopPropagation()">
                         <input type="checkbox" checked>
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
             </div>
             
-            <div class="setting-item">
+            <div class="setting-item" onclick="window.location.href='language_settings.html'">
                 <div class="setting-left">
                     <div class="setting-icon bg-red-500">
-                        <i class="fas fa-ruler"></i>
+                        <i class="fas fa-language"></i>
                     </div>
-                    <div class="setting-title">Units</div>
+                    <div class="setting-title">Language</div>
                 </div>
                 <div class="setting-right">
-                    <span class="mr-2">Metric</span>
+                    <span class="mr-2">English</span>
                     <i class="fas fa-chevron-right"></i>
                 </div>
             </div>
@@ -225,7 +227,7 @@
                 </div>
             </div>
             
-            <div class="setting-item">
+            <div class="setting-item" onclick="window.location.href='help_support.html'">
                 <div class="setting-left">
                     <div class="setting-icon bg-green-500">
                         <i class="fas fa-question-circle"></i>
@@ -240,10 +242,18 @@
         
         <!-- Sign Out Button -->
         <div class="mt-6 mb-20">
-            <button class="w-full py-3 text-red-500 font-semibold bg-white rounded-lg shadow-sm">
+            <button class="w-full py-3 text-red-500 font-semibold bg-white rounded-lg shadow-sm" onclick="signOut()">
                 Sign Out
             </button>
         </div>
     </div>
+    
+    <script>
+        function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
 </body>
 </html>

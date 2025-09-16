@@ -10,7 +10,7 @@ struct HealthRecord: Identifiable, Codable {
     var veterinarian: String?
     var notes: String?
     var attachments: [Attachment]
-    var validUntil: Date?
+    var reminderDate: Date?
     
     enum RecordType: String, Codable, CaseIterable, Identifiable {
         case vaccination = "Vaccination"
@@ -23,11 +23,11 @@ struct HealthRecord: Identifiable, Codable {
         var icon: String {
             switch self {
             case .vaccination:
-                return "syringe"
+                return "cross.case"
             case .medication:
-                return "pills"
+                return "pill"
             case .vetVisit:
-                return "stethoscope"
+                return "heart.text.square"
             case .symptom:
                 return "exclamationmark.triangle"
             }
@@ -91,7 +91,7 @@ struct HealthRecord: Identifiable, Codable {
                     size: nil
                 )
             ],
-            validUntil: nil
+            reminderDate: nil
         ),
         HealthRecord(
             id: "hr2",
@@ -110,7 +110,7 @@ struct HealthRecord: Identifiable, Codable {
                     size: 245 * 1024
                 )
             ],
-            validUntil: Calendar.current.date(byAdding: .year, value: 1, to: Calendar.current.date(byAdding: .month, value: -1, to: Date())!)
+            reminderDate: Calendar.current.date(byAdding: .year, value: 1, to: Calendar.current.date(byAdding: .month, value: -1, to: Date())!)
         ),
         HealthRecord(
             id: "hr3",
@@ -129,7 +129,7 @@ struct HealthRecord: Identifiable, Codable {
                     size: 1200 * 1024
                 )
             ],
-            validUntil: nil
+            reminderDate: nil
         ),
         HealthRecord(
             id: "hr4",
@@ -140,7 +140,7 @@ struct HealthRecord: Identifiable, Codable {
             veterinarian: "Dr. Johnson",
             notes: "For respiratory infection - completed",
             attachments: [],
-            validUntil: nil
+            reminderDate: nil
         ),
         HealthRecord(
             id: "hr5",
@@ -159,7 +159,7 @@ struct HealthRecord: Identifiable, Codable {
                     size: nil
                 )
             ],
-            validUntil: nil
+            reminderDate: nil
         )
     ]
 }

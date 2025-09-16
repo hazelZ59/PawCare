@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import UIKit
 
 struct HomeView: View {
     @EnvironmentObject var dataService: DataService
@@ -8,6 +9,7 @@ struct HomeView: View {
     @State private var isShowingAddHealthRecord = false
     @State private var isShowingAddWeightRecord = false
     @State private var isShowingActionSheet = false
+    @State private var isShowingEditCat = false
     
     var body: some View {
         NavigationView {
@@ -56,7 +58,7 @@ struct HomeView: View {
                     ScrollView {
                         VStack(spacing: 16) {
                             // Cat selector
-                            ScrollView(.horizontal, showsIndicators: false) {
+                            ScrollView(.horizontal, showsIndicators: true) {
                                 HStack(spacing: 12) {
                                     ForEach(dataService.cats) { cat in
                                         CatAvatarView(cat: cat, isSelected: selectedCat?.id == cat.id)
@@ -114,9 +116,20 @@ struct HomeView: View {
                                 .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
                                 .padding(.horizontal)
                                 
-                                // Reminders
-                                CardView(title: "Today's Reminders", actionText: "View All") {
-                                    if dataService.healthRecords.filter({ $0.catId == cat.id }).isEmpty {
+                                // Reminders - only for vaccination, medication, and vet visits
+                                CardView(title: "Today's Reminders", actionText: "") {
+                                    // Filter for records with reminder dates and only the specified types
+                                    let reminders = dataService.healthRecords.filter { 
+                                        $0.catId == cat.id && 
+                                        $0.reminderDate != nil && 
+                                        (
+                                            $0.type == .vaccination || 
+                                            $0.type == .medication || 
+                                            $0.type == .vetVisit
+                                        )
+                                    }
+                                    
+                                    if reminders.isEmpty {
                                         VStack(spacing: 20) {
                                             Image(systemName: "bell.slash")
                                                 .font(.system(size: 40))
@@ -125,7 +138,7 @@ struct HomeView: View {
                                             Text("No Reminders")
                                                 .font(.headline)
                                             
-                                            Text("You don't have any reminders for today")
+                                            Text("You don't have any upcoming reminders")
                                                 .font(.subheadline)
                                                 .foregroundColor(.secondary)
                                                 .multilineTextAlignment(.center)
@@ -133,21 +146,18 @@ struct HomeView: View {
                                         .frame(height: 150)
                                     } else {
                                         VStack(spacing: 0) {
-                                            ListItemView(
-                                                icon: "pills",
-                                                iconColor: .red,
-                                                title: "Morning Medication",
-                                                subtitle: "8:00 AM - Antibiotic"
-                                            )
-                                            
-                                            Divider()
-                                            
-                                            ListItemView(
-                                                icon: "fork.knife",
-                                                iconColor: .green,
-                                                title: "Evening Meal",
-                                                subtitle: "6:00 PM - 1/2 cup dry food"
-                                            )
+                                            ForEach(reminders.prefix(2)) { record in
+                                                ListItemView(
+                                                    icon: record.type.icon,
+                                                    iconColor: record.type.color,
+                                                    title: record.title,
+                                                    subtitle: formatReminderDate(record.reminderDate)
+                                                )
+                                                
+                                                if record.id != reminders.prefix(2).last?.id {
+                                                    Divider()
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -208,10 +218,20 @@ struct HomeView: View {
                     .navigationTitle("PawCare")
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {}) {
-                                Image(systemName: "bell")
+                            Button(action: {
+                                isShowingEditCat = true
+                            }) {
+                                Image(systemName: "pencil")
                                     .foregroundColor(.primary)
                             }
+                        }
+                    }
+                    .sheet(isPresented: $isShowingEditCat) {
+                        if let cat = selectedCat ?? dataService.cats.first {
+                            EditCatProfileView(cat: cat) { updatedCat in
+                                dataService.updateCat(updatedCat)
+                            }
+                            .environmentObject(dataService)
                         }
                     }
                     .overlay(alignment: .bottomTrailing) {
@@ -283,6 +303,23 @@ struct HomeView: View {
             return formatter.string(from: date)
         }
     }
+    
+    private func formatReminderDate(_ date: Date?) -> String {
+        guard let date = date else { return "" }
+        
+        let formatter = DateFormatter()
+        
+        if Calendar.current.isDateInToday(date) {
+            formatter.dateFormat = "h:mm a"
+            return "Today, " + formatter.string(from: date)
+        } else if Calendar.current.isDateInTomorrow(date) {
+            formatter.dateFormat = "h:mm a"
+            return "Tomorrow, " + formatter.string(from: date)
+        } else {
+            formatter.dateFormat = "MMM d, h:mm a"
+            return formatter.string(from: date)
+        }
+    }
 }
 
 // MARK: - Extracted CatStatsGrid View
@@ -294,23 +331,23 @@ struct CatStatsGrid: View {
     // Computed properties to determine what to display
     private var weightInfo: (icon: String, color: Color, value: String) {
         if let latestWeight = dataService.getLatestWeight(catId: cat.id) {
-            return ("scalemass", .blue, String(format: "%.1f kg", latestWeight.weight))
+            return ("scalemass.fill", .blue, String(format: "%.1f kg", latestWeight.weight))
         } else {
-            return ("scalemass", .gray, "No data")
+            return ("scalemass.fill", .gray, "No data")
         }
     }
     
     private var vaccineInfo: (icon: String, color: Color, value: String) {
         if let nextVaccination = dataService.healthRecords
-            .filter({ $0.catId == cat.id && $0.type == .vaccination && $0.validUntil != nil })
-            .sorted(by: { ($0.validUntil ?? Date()) < ($1.validUntil ?? Date()) })
+            .filter({ $0.catId == cat.id && $0.type == .vaccination && $0.reminderDate != nil })
+            .sorted(by: { ($0.reminderDate ?? Date()) < ($1.reminderDate ?? Date()) })
             .first {
             
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MMM d"
-            return ("syringe", .orange, dateFormatter.string(from: nextVaccination.validUntil ?? Date()))
+            return ("cross.case", .orange, dateFormatter.string(from: nextVaccination.reminderDate ?? Date()))
         } else {
-            return ("syringe", .gray, "None")
+            return ("cross.case", .gray, "None")
         }
     }
     

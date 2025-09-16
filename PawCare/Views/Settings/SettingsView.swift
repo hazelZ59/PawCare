@@ -3,7 +3,9 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var authService: AuthService
     @State private var notificationsEnabled = true
-    @State private var units = "Metric"
+    @State private var language = "English"
+    @State private var isShowingLanguageSettings = false
+    @State private var isShowingHelpSupport = false
     
     var body: some View {
         NavigationView {
@@ -11,33 +13,31 @@ struct SettingsView: View {
                 // User profile section
                 if let user = authService.currentUser {
                     Section {
-                        HStack {
-                            ZStack {
-                                Circle()
-                                    .fill(Color.blue)
-                                    .frame(width: 60, height: 60)
+                        NavigationLink(destination: UserProfileView(user: user)) {
+                            HStack {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.blue)
+                                        .frame(width: 60, height: 60)
+                                    
+                                    Image(systemName: "person")
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.white)
+                                }
                                 
-                                Image(systemName: "person")
-                                    .font(.system(size: 30))
-                                    .foregroundColor(.white)
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(user.fullName)
-                                    .font(.headline)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(user.fullName)
+                                        .font(.headline)
+                                    
+                                    Text(user.email)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
                                 
-                                Text(user.email)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                Spacer()
                             }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            .padding(.vertical, 8)
                         }
-                        .padding(.vertical, 8)
                     }
                 }
                 
@@ -45,14 +45,22 @@ struct SettingsView: View {
                 Section(header: Text("App Settings")) {
                     SettingToggleRow(icon: "bell.fill", iconColor: .blue, title: "Notifications", isOn: $notificationsEnabled)
                     
-                    SettingNavigationRow(icon: "ruler", iconColor: .red, title: "Units", value: units)
+                    Button(action: {
+                        isShowingLanguageSettings = true
+                    }) {
+                        SettingNavigationRow(icon: "globe", iconColor: .orange, title: "Language", value: language)
+                    }
                 }
                 
                 // About section
                 Section(header: Text("About")) {
                     SettingValueRow(icon: "info.circle", iconColor: .gray, title: "App Version", value: "1.0.0")
                     
-                    SettingNavigationRow(icon: "questionmark.circle", iconColor: .green, title: "Help & Support")
+                    Button(action: {
+                        isShowingHelpSupport = true
+                    }) {
+                        SettingNavigationRow(icon: "questionmark.circle", iconColor: .green, title: "Help & Support")
+                    }
                 }
                 
                 // Sign out button
@@ -69,6 +77,12 @@ struct SettingsView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
+            .sheet(isPresented: $isShowingLanguageSettings) {
+                LanguageSettingsView(selectedLanguage: $language)
+            }
+            .sheet(isPresented: $isShowingHelpSupport) {
+                HelpSupportView()
+            }
         }
     }
 }

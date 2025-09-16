@@ -31,6 +31,13 @@
             background-color: #fff;
             padding: 0 16px;
             border-bottom: 1px solid #f2f2f7;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+            scroll-behavior: smooth;
+        }
+        
+        .tab-bar::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
         
         .tab {
@@ -39,6 +46,7 @@
             color: #8e8e93;
             border-bottom: 2px solid transparent;
             white-space: nowrap;
+            flex-shrink: 0;
         }
         
         .tab.active {
@@ -58,6 +66,7 @@
             display: flex;
             padding: 16px;
             border-bottom: 1px solid #f2f2f7;
+            cursor: pointer;
         }
         
         .list-item:last-child {
@@ -148,6 +157,47 @@
             margin-top: 10px;
             margin-right: 10px;
         }
+        
+        .record-type-indicator {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .record-type-scroll {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .record-type-scroll-shadow-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0));
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .record-type-scroll-shadow-right {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0));
+            z-index: 5;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -155,7 +205,7 @@
         <div class="flex justify-between items-center">
             <h1 class="text-lg font-semibold">Health Records</h1>
             <div class="flex items-center">
-                <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-2">
+                <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-2" onclick="window.location.href='seach_page.html'">
                     <i class="fas fa-search text-gray-500"></i>
                 </button>
                 <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
@@ -165,17 +215,21 @@
         </div>
     </div>
     
-    <div class="tab-bar">
-        <div class="tab active">All</div>
-        <div class="tab">Vaccinations</div>
-        <div class="tab">Medications</div>
-        <div class="tab">Vet Visits</div>
-        <div class="tab">Symptoms</div>
+    <div class="record-type-scroll relative">
+        <div class="record-type-scroll-shadow-left"></div>
+        <div class="tab-bar">
+            <div class="tab active">All</div>
+            <div class="tab">Vaccinations</div>
+            <div class="tab">Medications</div>
+            <div class="tab">Vet Visits</div>
+            <div class="tab">Symptoms</div>
+        </div>
+        <div class="record-type-scroll-shadow-right"></div>
     </div>
     
     <div class="p-4">
         <div class="card">
-            <div class="list-item">
+            <div class="list-item" onclick="window.location.href='health_record_detail.html'">
                 <div class="list-icon bg-yellow-500">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
@@ -192,7 +246,7 @@
                 </div>
             </div>
             
-            <div class="list-item">
+            <div class="list-item" onclick="window.location.href='health_record_detail.html'">
                 <div class="list-icon bg-blue-500">
                     <i class="fas fa-syringe"></i>
                 </div>
@@ -215,7 +269,7 @@
                 </div>
             </div>
             
-            <div class="list-item">
+            <div class="list-item" onclick="window.location.href='health_record_detail.html'">
                 <div class="list-icon bg-green-500">
                     <i class="fas fa-stethoscope"></i>
                 </div>
@@ -238,7 +292,7 @@
                 </div>
             </div>
             
-            <div class="list-item">
+            <div class="list-item" onclick="window.location.href='health_record_detail.html'">
                 <div class="list-icon bg-red-500">
                     <i class="fas fa-pills"></i>
                 </div>
@@ -252,7 +306,7 @@
                 </div>
             </div>
             
-            <div class="list-item">
+            <div class="list-item" onclick="window.location.href='health_record_detail.html'">
                 <div class="list-icon bg-purple-500">
                     <i class="fas fa-tooth"></i>
                 </div>
@@ -271,8 +325,42 @@
         </div>
     </div>
     
-    <div class="button-add">
+    <div class="button-add" onclick="window.location.href='add_health_record.html'">
         <i class="fas fa-plus"></i>
     </div>
+    
+    <script>
+        // Add horizontal scrolling indicators
+        const tabBar = document.querySelector('.tab-bar');
+        const shadowLeft = document.querySelector('.record-type-scroll-shadow-left');
+        const shadowRight = document.querySelector('.record-type-scroll-shadow-right');
+        
+        function updateShadows() {
+            if (tabBar.scrollLeft > 0) {
+                shadowLeft.style.opacity = '1';
+            } else {
+                shadowLeft.style.opacity = '0';
+            }
+            
+            if (tabBar.scrollLeft + tabBar.clientWidth < tabBar.scrollWidth) {
+                shadowRight.style.opacity = '1';
+            } else {
+                shadowRight.style.opacity = '0';
+            }
+        }
+        
+        tabBar.addEventListener('scroll', updateShadows);
+        window.addEventListener('resize', updateShadows);
+        updateShadows();
+        
+        // Make tabs clickable
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>

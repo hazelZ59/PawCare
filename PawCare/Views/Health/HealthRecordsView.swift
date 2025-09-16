@@ -9,13 +9,16 @@ struct HealthRecordsView: View {
     @State private var isShowingFilters = false
     @State private var isShowingAddRecord = false
     @State private var isShowingEmptyState = false
+    @State private var isShowingSearch = false
+    @State private var isShowingRecordDetail = false
+    @State private var selectedRecord: HealthRecord?
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
                 // Cat selector (if multiple cats)
                 if dataService.cats.count > 1 {
-                    ScrollView(.horizontal, showsIndicators: false) {
+                    ScrollView(.horizontal, showsIndicators: true) {
                         HStack(spacing: 12) {
                             ForEach(dataService.cats) { cat in
                                 CatAvatarView(cat: cat, isSelected: selectedCat?.id == cat.id)
@@ -30,22 +33,22 @@ struct HealthRecordsView: View {
                     .background(Color.white)
                 }
                 
-                // Tab bar for filtering by record type
+                // Enhanced horizontal scroll bar for record types
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 0) {
-                        TabButton(title: "All", isSelected: selectedTab == nil) {
+                    HStack(spacing: 12) {
+                        RecordTypeButton(title: "All", icon: "list.bullet", isSelected: selectedTab == nil) {
                             selectedTab = nil
                         }
                         
                         ForEach(HealthRecord.RecordType.allCases) { type in
-                            TabButton(title: type.rawValue, isSelected: selectedTab == type) {
+                            RecordTypeButton(title: type.rawValue, icon: type.icon, isSelected: selectedTab == type) {
                                 selectedTab = type
                             }
                         }
                     }
                     .padding(.horizontal)
+                    .padding(.vertical, 12)
                 }
-                .padding(.vertical, 8)
                 .background(Color.white)
                 
                 if filteredRecords.isEmpty {
@@ -88,11 +91,15 @@ struct HealthRecordsView: View {
                     .background(Color(.systemGray6))
                 } else {
                     // Health records list
-                    ScrollView {
+                    ScrollView(showsIndicators: true) {
                         LazyVStack(spacing: 16) {
                             ForEach(filteredRecords) { record in
                                 HealthRecordCard(record: record)
                                     .padding(.horizontal)
+                                    .onTapGesture {
+                                        selectedRecord = record
+                                        isShowingRecordDetail = true
+                                    }
                             }
                         }
                         .padding(.vertical)
@@ -105,7 +112,7 @@ struct HealthRecordsView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 12) {
                         Button(action: {
-                            // Show search
+                            isShowingSearch = true
                         }) {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.primary)
@@ -138,6 +145,16 @@ struct HealthRecordsView: View {
             .sheet(isPresented: $isShowingAddRecord) {
                 if let cat = selectedCat ?? dataService.cats.first {
                     AddHealthRecordView(cat: cat)
+                }
+            }
+            .sheet(isPresented: $isShowingSearch) {
+                // This would be the SearchView implementation
+                Text("Health Records Search")
+                    .navigationTitle("Search")
+            }
+            .sheet(isPresented: $isShowingRecordDetail) {
+                if let record = selectedRecord {
+                    HealthRecordDetailView(record: record)
                 }
             }
         }
@@ -174,30 +191,32 @@ struct HealthRecordsView: View {
     }
 }
 
-struct TabButton: View {
+struct RecordTypeButton: View {
     let title: String
+    let icon: String
     let isSelected: Bool
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 16)
-                .foregroundColor(isSelected ? .blue : .secondary)
-        }
-        .background(
-            VStack {
-                Spacer()
-                if isSelected {
-                    Rectangle()
-                        .fill(Color.blue)
-                        .frame(height: 2)
+            VStack(spacing: 6) {
+                ZStack {
+                    Circle()
+                        .fill(isSelected ? Color.blue : Color.gray.opacity(0.1))
+                        .frame(width: 50, height: 50)
+                    
+                    Image(systemName: icon)
+                        .font(.system(size: 20))
+                        .foregroundColor(isSelected ? .white : .gray)
                 }
+                
+                Text(title)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(isSelected ? .blue : .secondary)
             }
-        )
+            .padding(.horizontal, 4)
+        }
     }
 }
 
@@ -247,7 +266,7 @@ struct HealthRecordCard: View {
                     // Images
                     let imageAttachments = record.attachments.filter { $0.type == .image }
                     if !imageAttachments.isEmpty {
-                        ScrollView(.horizontal, showsIndicators: false) {
+                        ScrollView(.horizontal, showsIndicators: true) {
                             HStack(spacing: 8) {
                                 ForEach(imageAttachments) { attachment in
                                     AsyncImage(url: attachment.url) { phase in
@@ -309,9 +328,9 @@ struct HealthRecordCard: View {
                 .padding(.bottom, 16)
             }
             
-            // Valid until date for vaccinations
-            if record.type == .vaccination, let validUntil = record.validUntil {
-                Text("Valid until \(formatDate(validUntil))")
+            // Reminder date for vaccinations, medications, and vet visits
+            if let reminderDate = record.reminderDate {
+                Text("Reminder: \(formatDate(reminderDate))")
                     .font(.footnote)
                     .foregroundColor(.blue)
                     .padding(.horizontal)

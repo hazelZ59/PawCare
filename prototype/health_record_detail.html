@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCare - Health Record Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f2f2f7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-header {
+            padding: 16px;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+        }
+        
+        .card-header {
+            padding: 16px;
+            border-bottom: 1px solid #f2f2f7;
+            font-weight: 600;
+        }
+        
+        .card-content {
+            padding: 16px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: #8e8e93;
+            font-size: 14px;
+        }
+        
+        .info-value {
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .record-header {
+            background-color: #fff;
+            padding: 20px 16px;
+            margin-bottom: 16px;
+        }
+        
+        .record-type-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .record-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .record-subtitle {
+            color: #8e8e93;
+            font-size: 14px;
+        }
+        
+        .file-attachment {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            background-color: #f2f2f7;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #007aff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 12px;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .file-size {
+            color: #8e8e93;
+            font-size: 12px;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .button-primary {
+            background-color: #007aff;
+            color: white;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .button-secondary {
+            background-color: #f2f2f7;
+            color: #007aff;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 12px;
+        }
+        
+        .button-delete {
+            background-color: #fff;
+            color: #ff3b30;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 12px;
+            border: 1px solid #ff3b30;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-header">
+        <button class="mr-4" onclick="window.history.back()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <h1 class="text-lg font-semibold">Health Record</h1>
+        <button class="ml-auto text-blue-500 font-medium">Edit</button>
+    </div>
+    
+    <div class="record-header">
+        <div class="record-type-badge bg-blue-500">Vaccination</div>
+        <div class="record-title">Rabies Vaccination</div>
+        <div class="record-subtitle">August 15, 2023 • Dr. Smith</div>
+    </div>
+    
+    <div class="p-4">
+        <div class="card">
+            <div class="card-header">Details</div>
+            <div class="card-content">
+                <div class="info-row">
+                    <div class="info-label">Date</div>
+                    <div class="info-value">August 15, 2023</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Veterinarian</div>
+                    <div class="info-value">Dr. Smith</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Valid Until</div>
+                    <div class="info-value text-blue-500">August 15, 2024</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Location</div>
+                    <div class="info-value">City Pet Clinic</div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-sm font-medium mb-2">Notes</div>
+                    <div class="text-sm">
+                        Annual rabies vaccination administered. Cat tolerated the procedure well. No adverse reactions observed during the visit.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">Attachments</div>
+            <div class="card-content">
+                <div class="file-attachment">
+                    <div class="file-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">Vaccination_Certificate.pdf</div>
+                        <div class="file-size">245 KB</div>
+                    </div>
+                    <button class="ml-2 text-blue-500">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                
+                <div class="image-gallery">
+                    <img src="https://images.unsplash.com/photo-1583524505974-6facd53f4597?ixlib=rb-1.2.1&auto=format&fit=crop&w=120&h=120&q=80" class="gallery-image" alt="Vaccination photo">
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-delete">
+            Delete Record
+        </div>
+    </div>
+</body>
+</html>
+

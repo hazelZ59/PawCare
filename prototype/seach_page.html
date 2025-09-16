@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCare - Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f2f2f7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-header {
+            padding: 16px;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #f2f2f7;
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+        
+        .search-icon {
+            color: #8e8e93;
+            margin-right: 8px;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-cancel {
+            color: #007aff;
+            font-weight: 500;
+            margin-left: 12px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #8e8e93;
+            padding: 16px 16px 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+        }
+        
+        .list-item {
+            display: flex;
+            padding: 16px;
+            border-bottom: 1px solid #f2f2f7;
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .list-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .list-content {
+            flex: 1;
+        }
+        
+        .list-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .list-subtitle {
+            font-size: 14px;
+            color: #8e8e93;
+        }
+        
+        .recent-searches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 16px;
+        }
+        
+        .search-tag {
+            background-color: #f2f2f7;
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #3c3c43;
+        }
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            color: #c7c7cc;
+            margin-bottom: 16px;
+        }
+        
+        .empty-text {
+            color: #8e8e93;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .empty-subtext {
+            color: #8e8e93;
+            font-size: 14px;
+            max-width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-header">
+        <div class="flex items-center">
+            <div class="search-bar flex-1">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" class="search-input" placeholder="Search health records, cats..." autofocus id="searchInput">
+                <button class="clear-search" style="display: none;" onclick="clearSearch()">
+                    <i class="fas fa-times-circle text-gray-400"></i>
+                </button>
+            </div>
+            <button class="search-cancel" onclick="window.history.back()">
+                Cancel
+            </button>
+        </div>
+    </div>
+    
+    <div id="initialContent">
+        <div class="section-title">Recent Searches</div>
+        <div class="recent-searches">
+            <div class="search-tag" onclick="performSearch('vaccination')">vaccination</div>
+            <div class="search-tag" onclick="performSearch('weight')">weight</div>
+            <div class="search-tag" onclick="performSearch('medication')">medication</div>
+            <div class="search-tag" onclick="performSearch('vet visit')">vet visit</div>
+        </div>
+        
+        <div class="section-title">Suggested</div>
+        <div class="card">
+            <div class="list-item" onclick="performSearch('vaccination schedule')">
+                <div class="list-icon bg-blue-500">
+                    <i class="fas fa-syringe"></i>
+                </div>
+                <div class="list-content">
+                    <div class="list-title">Vaccination Schedule</div>
+                    <div class="list-subtitle">View upcoming vaccinations</div>
+                </div>
+                <div class="text-blue-500">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="list-item" onclick="performSearch('weight history')">
+                <div class="list-icon bg-green-500">
+                    <i class="fas fa-weight"></i>
+                </div>
+                <div class="list-content">
+                    <div class="list-title">Weight History</div>
+                    <div class="list-subtitle">Track weight changes</div>
+                </div>
+                <div class="text-blue-500">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="list-item" onclick="performSearch('medication reminders')">
+                <div class="list-icon bg-red-500">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="list-content">
+                    <div class="list-title">Medication Reminders</div>
+                    <div class="list-subtitle">View all medication schedules</div>
+                </div>
+                <div class="text-blue-500">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="searchResults" style="display: none;">
+        <div class="p-4">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="empty-text">No results found</div>
+                <div class="empty-subtext">Try searching for something else or check your spelling</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const clearButton = document.querySelector('.clear-search');
+        const initialContent = document.getElementById('initialContent');
+        const searchResults = document.getElementById('searchResults');
+        
+        searchInput.addEventListener('input', function() {
+            if (this.value) {
+                clearButton.style.display = 'block';
+                initialContent.style.display = 'none';
+                searchResults.style.display = 'block';
+            } else {
+                clearButton.style.display = 'none';
+                initialContent.style.display = 'block';
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        function clearSearch() {
+            searchInput.value = '';
+            clearButton.style.display = 'none';
+            initialContent.style.display = 'block';
+            searchResults.style.display = 'none';
+        }
+        
+        function performSearch(term) {
+            searchInput.value = term;
+            clearButton.style.display = 'block';
+            initialContent.style.display = 'none';
+            searchResults.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+

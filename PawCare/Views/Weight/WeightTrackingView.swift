@@ -4,16 +4,15 @@ import Charts
 struct WeightTrackingView: View {
     @EnvironmentObject var dataService: DataService
     @State private var selectedCat: Cat?
-    @State private var isShowingCalendar = false
     @State private var isShowingAddWeight = false
     
     var body: some View {
         NavigationView {
-            ScrollView {
+            ScrollView(showsIndicators: true) {
                 VStack(spacing: 16) {
                     // Cat selector (if multiple cats)
                     if dataService.cats.count > 1 {
-                        ScrollView(.horizontal, showsIndicators: false) {
+                        ScrollView(.horizontal, showsIndicators: true) {
                             HStack(spacing: 12) {
                                 ForEach(dataService.cats) { cat in
                                     CatAvatarView(cat: cat, isSelected: selectedCat?.id == cat.id)
@@ -184,16 +183,6 @@ struct WeightTrackingView: View {
                 .padding(.bottom, 100) // Extra padding for the bottom to account for the tab bar
             }
             .navigationTitle("Weight Tracking")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        isShowingCalendar.toggle()
-                    }) {
-                        Image(systemName: "calendar")
-                            .foregroundColor(.primary)
-                    }
-                }
-            }
             .overlay(alignment: .bottomTrailing) {
                 Button(action: {
                     if let cat = selectedCat ?? dataService.cats.first {

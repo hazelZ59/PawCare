@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 struct CatProfileView: View {
     @EnvironmentObject var dataService: DataService
@@ -10,7 +11,7 @@ struct CatProfileView: View {
     }
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: true) {
             VStack(spacing: 16) {
                 // Profile header
                 VStack(spacing: 12) {
@@ -208,6 +209,9 @@ struct EditCatProfileView: View {
     @State private var bloodType: String
     @State private var allergies: String
     @State private var chronicConditions: String
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var selectedPhotoData: Data?
+    @State private var newImageURL: URL?
     
     init(cat: Cat, onSave: @escaping (Cat) -> Void) {
         self.onSave = onSave
@@ -225,6 +229,69 @@ struct EditCatProfileView: View {
     var body: some View {
         NavigationView {
             Form {
+                Section(header: Text("Profile Photo")) {
+                    HStack {
+                        Spacer()
+                        
+                        ZStack {
+                            if let selectedPhotoData = selectedPhotoData,
+                               let uiImage = UIImage(data: selectedPhotoData) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 100, height: 100)
+                                    .clipShape(Circle())
+                            } else if let imageURL = cat.imageURL {
+                                AsyncImage(url: imageURL) { phase in
+                                    if let image = phase.image {
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                    } else if phase.error != nil {
+                                        Image(systemName: "pawprint.fill")
+                                            .font(.system(size: 40))
+                                            .foregroundColor(.white)
+                                    } else {
+                                        ProgressView()
+                                    }
+                                }
+                                .frame(width: 100, height: 100)
+                                .clipShape(Circle())
+                            } else {
+                                Circle()
+                                    .fill(Color.blue.opacity(0.2))
+                                    .frame(width: 100, height: 100)
+                                    .overlay(
+                                        Image(systemName: "pawprint.fill")
+                                            .font(.system(size: 40))
+                                            .foregroundColor(.blue)
+                                    )
+                            }
+                        }
+                        
+                        Spacer()
+                    }
+                    .padding(.vertical)
+                    
+                    PhotosPicker(
+                        selection: $selectedPhotoItem,
+                        matching: .images,
+                        photoLibrary: .shared()) {
+                            Label("Select Photo", systemImage: "photo")
+                        }
+                        .onChange(of: selectedPhotoItem) { newItem in
+                            Task {
+                                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                                    selectedPhotoData = data
+                                    
+                                    // In a real app, you would upload this to a server and get back a URL
+                                    // For demo purposes, we'll use a placeholder URL
+                                    newImageURL = URL(string: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba")
+                                }
+                            }
+                        }
+                }
+                
                 Section(header: Text("Basic Information")) {
                     TextField("Name", text: $name)
                     
@@ -271,6 +338,11 @@ struct EditCatProfileView: View {
                         updatedCat.bloodType = bloodType.isEmpty ? nil : bloodType
                         updatedCat.allergies = allergies.isEmpty ? [] : allergies.split(separator: ",").map { String($0.trimmingCharacters(in: .whitespaces)) }
                         updatedCat.chronicConditions = chronicConditions.isEmpty ? [] : chronicConditions.split(separator: ",").map { String($0.trimmingCharacters(in: .whitespaces)) }
+                        
+                        // Update image URL if a new photo was selected
+                        if let newURL = newImageURL {
+                            updatedCat.imageURL = newURL
+                        }
                         
                         onSave(updatedCat)
                         dismiss()

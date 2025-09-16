@@ -19,7 +19,7 @@ struct MainTabView: View {
             
             WeightTrackingView()
                 .tabItem {
-                    Label("Weight", systemImage: "scalemass")
+                    Label("Weight", systemImage: "scalemass.fill")
                 }
                 .tag(2)
             
