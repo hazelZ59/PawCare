@@ -256,3 +256,4 @@ struct HealthRecordDetailView_Previews: PreviewProvider {
     }
 }
 
+
